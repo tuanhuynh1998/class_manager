@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  platform:
+    build: .
+    image: practice-platform
+    command: gunicorn --bind 0.0.0.0:80 --access-logfile - --error-logfile -
+      --reload django_training.wsgi
+    env_file:
+      - local.env
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/app
+
+  postgres:
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=03041999
+      - POSTGRES_DB=student_manager
+    volumes:
+      - pg-volume:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+  worker:
+    image: practice-platform
+    command: celery -A student_manager.messagebus.celery worker --loglevel=INFO
+    depends_on:
+      - localstack
+    env_file:
+      - local.env
+    volumes:
+      - ./:/app
+
+  scheduler:
+    image: practice-platform
+    command: celery -A student_manager.messagebus.celery beat --loglevel=INFO
+    depends_on:
+      - localstack
+    env_file:
+      - local.env
+    volumes:
+      - ./:/app
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4571:4571"
+    environment:
+      - SERVICES=${SERVICES-}
+      - DEBUG=${DEBUG-}
+      - DATA_DIR=${DATA_DIR-}
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
+      - HOST_TMP_FOLDER=${TMPDIR:-/tmp/}localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOSTNAME_EXTERNAL=localstack
+    volumes:
+      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  redis:
+    image: redis:latest
+    environment:
+      - REDIS_HOST=redis
+    volumes:
+      - ./:/app
+    ports:
+      - 6379:6379
+
+volumes:
+  pg-volume:
