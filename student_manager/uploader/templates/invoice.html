@@ -1,0 +1,120 @@
+<html>
+
+<body>
+    <page>
+        <table cellspacing="0" style="width: 100%; table-layout: fixed;">
+            <tr>
+                <td style="width: 50%;" valign="top">
+                    <table cellspacing="2" style="width:100%;">
+                        <tr>
+                            <td><b>{{user.username}}</b></td>
+                        </tr>
+                        <tr>
+                            <td>https://store.sarisuki.com/{{store.url}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>{{cl.first_name}} {{cl.last_name}}</b></td>
+                        </tr>
+                        <tr>
+                            {% with billing=sale.billing_address %}
+                            <td>{{billing.line_1}}, {{billing.line_2}} <br />
+                                {{billing.city}}, {{billing.state}}</td>
+                            {% endwith %}
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 50%;">
+                    <table cellspacing="2" style="width: 100%;" align="right">
+                        <tr>
+                            <td style="width: 40%;">Invoice Number</td>
+                            <td style="text-align: right;">{{invoice.external_invoice_number}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%;">Invoice Date</td>
+                            <td style="text-align: right;">{{invoice.invoice_date}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%;">Delivery Number</td>
+                            <td style="text-align: right;">-</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%;">Due Date</td>
+                            <td style="text-align: right;">{{invoice.invoice_due_date}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table cellspacing="0" style="width: 100%;">
+            <tr>
+                <td>
+                    <h2>INVOICE</h2>
+                </td>
+            </tr>
+        </table>
+        <table cellspacing="0" style="width: 100%;margin: 20px 0 10px">
+            <tr>
+                <td>SALE # {{invoice.sale.sale_order_number}}</td>
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+            </tr>
+        </table>
+        <table cellspacing="0" style="width:100%;border-collapse: collapse; table-layout: fixed;">
+            <tr style="background: #DDDDDD;">
+                <td
+                    style="width:25%;padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;border-left: 1px solid #000;">
+                    Product Name</td>
+                <td
+                    style="width:15%;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;">
+                    UOM</td>
+                <td
+                    style="width:12%;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;">
+                    Price</td>
+                <td
+                    style="width:12%;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;">
+                    SS Cost</td>
+                <td
+                    style="width:9%;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;">
+                    Qty</td>
+                <td
+                    style="width:12%;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;">
+                    Commission</td>
+                <td
+                    style="width:15%;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;">
+                    Payable to SS</td>
+            </tr>
+            {% for line in invoice.line_items.all %}
+            <tr>
+                <td
+                    style='width:25%;padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;border-left: 1px solid #000;'>
+                    {{line.name}}</td>
+                <td
+                    style='width:15%;font-size:10px;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;'>
+                    {{line.unit_of_measure}}</td>
+                <td
+                    style='width:12%;text-align: right; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;'>
+                    {{line.cl_price}}</td>
+                <td
+                    style='width:12%;text-align: right; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;'>
+                    {{line.floor_price}}</td>
+                <td
+                    style='width:9%;text-align: center; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;'>
+                    {{line.quantity}}</td>
+                <td
+                    style='width:12%;text-align: right; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;'>
+                    {{line.total_cl_margin}}</td>
+                <td
+                    style='width:15%;text-align: right; padding: 5px;border-top: 1px solid #000;border-right: 1px solid #000;border-bottom: 1px solid #000;'>
+                    {{line.floor_total}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </page>
+</body>
+
+</html>
